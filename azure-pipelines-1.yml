@@ -11,6 +11,12 @@ resources:
 variables:
   tag: '$(Build.BuildId)'
 
+  # Pool name (where the agent is in)
+  poolName: 'Default'
+
+  # Agent VM image name
+  vmImageName: 'arm-vm'
+
 stages:
 - stage: Build
   displayName: Build image
@@ -18,7 +24,8 @@ stages:
   - job: Build
     displayName: Build
     pool:
-      vmImage: ubuntu-latest
+      name: $(poolName)
+      vmImage: $(vmImageName)
     steps:
     - task: Docker@2
       displayName: Build an image
@@ -35,6 +42,9 @@ stages:
   jobs:
   - job: TestJob
     displayName: 'Test Job'
+    pool:
+      name: $(poolName)
+      vmImage: $(vmImageName)
     steps:
     - script: |
         echo "Running unit tests..."
