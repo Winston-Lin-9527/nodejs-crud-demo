@@ -12,10 +12,10 @@ variables:
   tag: '$(Build.BuildId)'
 
   # Pool name (where the agent is in)
-  poolName: 'Default'
+  poolName: 'Azure Pipelines'
 
   # Agent VM image name
-  vmImageName: 'arm-vm'
+  vmImageName: 'Hosted Agent'
 
 stages:
 - stage: Build
