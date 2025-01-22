@@ -98,3 +98,4 @@ stages:
         azureSubscription: $(azureSubscription_containerApp)
         appName: $(appName)
         containers: $(containerRegistry)/$(imageRepository):$(tag)
+        containerCommand: 'docker compose up'
