@@ -12,8 +12,17 @@ pool:
 steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
-
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
+    echo npm project install
+    npm install 
+    echo npm project build
+    npm run build 
   displayName: 'Run a multi-line script'
+- script: |
+    echo npm run tests
+    npm run test
+  displayName: 'Run tests'

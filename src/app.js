@@ -18,7 +18,7 @@ mongoose.connect(MONGODB_URI)
 
 // Only start the server if we're not in a test environment
 let server;
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test') {  // set in package.json
   server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
