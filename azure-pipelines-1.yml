@@ -14,11 +14,18 @@ variables:
   poolName: 'Default'
   # Agent VM image name
   vmImageName: 'arm-vm'
+
+  # for pushing to registry
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'c2122642-db2e-4436-bd2f-270d4e0b930b'
   imageRepository: 'winstonlinnodejscruddemo'
   containerRegistry: 'myownregistry.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  
+  # for deployment to container app
+  appName: devopsdemowebapp
+  # this subscription ID is taken from the container web app page
+  azureSubscription_containerApp: '0049e4f9-cdd6-4927-821c-da241d40e9d0'
 
 stages:
 - stage: Build
@@ -75,3 +82,19 @@ stages:
           dockerfile: $(dockerfilePath) 
           tags: |
             $(tag)
+
+- stage: Deploy
+  displayName: Deploy the container to an Azure container app
+  pool:
+    name: $(poolName)
+    vmImage: $(vmImageName)
+  jobs:
+  - job: DeployJob
+    steps:
+    ## Add the below snippet at the end of your pipeline
+    - task: AzureWebAppContainer@1
+      displayName: 'Azure Web App on Container Deploy'
+      inputs:
+        azureSubscription: $(azureSubscription_containerApp)
+        appName: $(appName)
+        containers: $(containerRegistry)/$(imageRepository):$(tag)
