@@ -10,12 +10,15 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
-
   # Pool name (where the agent is in)
   poolName: 'Default'
-
   # Agent VM image name
   vmImageName: 'arm-vm'
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: 'c2122642-db2e-4436-bd2f-270d4e0b930b'
+  imageRepository: 'winstonlinnodejscruddemo'
+  containerRegistry: 'myownregistry.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
 
 stages:
 - stage: Build
@@ -31,7 +34,7 @@ stages:
       displayName: Build an image
       inputs:
         command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        dockerfile: $(dockerfilePath)
         tags: |
           $(tag)
 
@@ -51,3 +54,22 @@ stages:
         docker compose run app npm run test
         docker stop $(docker ps -a -q)
       displayName: 'Run unit tests'
+
+- stage: Publish
+  displayName: Publish the container
+  jobs:
+  - job: Push
+    displayName: Push container
+    pool:
+      name: $(poolName)
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: push the image to container registry
+      inputs:
+          command: push
+          containerRegistry: $(dockerRegistryServiceConnection)
+          repository: $(imageRepository)
+          dockerfile: $(dockerfilePath) 
+          tags: |
+            $(tag)
