@@ -91,7 +91,7 @@ stages:
   jobs:
   - job: DeployJob
     steps:
-    ## Add the below snippet at the end of your pipeline
+    ## deploy to azure container web app that i created earlier 
     - task: AzureWebAppContainer@1
       displayName: 'Azure Web App on Container Deploy'
       inputs:
